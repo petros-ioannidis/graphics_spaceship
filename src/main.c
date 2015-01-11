@@ -47,6 +47,7 @@ void Render()
 
     //the body of the spaceship
     glPushMatrix();
+    glTranslatef(2.0f, 0.0f, -6.0f);
     spaceship();
     glPopMatrix();
 
@@ -88,7 +89,7 @@ int main(int argc, char* argv[])
 
     // Define the main window size and initial position 
     // ( upper left corner, boundaries included )
-    glutInitWindowSize(800, 600);
+    glutInitWindowSize(1600, 1000);
     glutInitWindowPosition(50,50);
 
     // Create and label the main window
