@@ -9,7 +9,6 @@ void spaceship_turbine(void)
     /* this is the turbing along with the fan */
 
     /* the color of the turbine */
-    glScalef(2.0f, 2.0f, 2.0f);
     glColor3f(1.0f, 0.5f, 0.3f);
 
     /* the main part of the turbine */
@@ -82,6 +81,7 @@ void spaceship(void)
     glPushMatrix();
     glTranslatef(-2.70f, 0.0f, 0.0f);
     glRotatef(90, 0.0f, 1.0f, 0.0f);
+    glScalef(2.0f, 2.0f, 2.0f);
     spaceship_turbine();
     glPopMatrix();
 
@@ -107,6 +107,22 @@ void spaceship(void)
     glRotatef(-10, 0.0f, 1.0f, 0.0f);
     glRotatef(-10, 1.0f, 0.0f, 0.0f);
     spaceship_wing();
+    glPopMatrix();
+
+    /* right wing turbine */
+    glPushMatrix();
+    glTranslatef(-0.50f, -0.20f, 0.5f);
+    glTranslatef(-0.10f, -0.40f, 0.80f);
+    glRotatef(90, 0.0f, 1.0f, 0.0f);
+    spaceship_turbine();
+    glPopMatrix();
+
+    /* left wing turbine */
+    glPushMatrix();
+    glTranslatef(-0.50f, -0.20f, -0.5f);
+    glTranslatef(-0.10f, -0.40f, -0.80f);
+    glRotatef(90, 0.0f, 1.0f, 0.0f);
+    spaceship_turbine();
     glPopMatrix();
 
     glPopMatrix();
