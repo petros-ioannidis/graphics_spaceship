@@ -6,6 +6,7 @@ float sun_ambient[] = { 0.5f, 0.5f, 0.5f, 1.0f};
 float sun_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f};
 float sun_position[] = { 100.0f, 0.0f, 2.0f, 1.0f};
 
+float test = 270;
 int keys[256];
 
 void Setup()  
@@ -48,8 +49,11 @@ void Render()
     //the body of the spaceship
     glPushMatrix();
     glTranslatef(2.0f, 0.0f, -6.0f);
+    glRotatef(test, 0.0, 1.0 ,0.0);
+    //glRotatef(90, 0.0, 0.0 ,0.0);
     spaceship();
     glPopMatrix();
+    test += 8.0f;
 
 
     glutSwapBuffers();
