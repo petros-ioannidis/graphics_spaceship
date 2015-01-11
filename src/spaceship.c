@@ -2,7 +2,8 @@
 #include <GL/glut.h>
 #include "../headers/spaceship.h"
 
-float test = 0;
+float test = 270;
+float turbing_r = 0;
 
 void spaceship_turbine(void)
 {
@@ -14,6 +15,7 @@ void spaceship_turbine(void)
     glPopMatrix();
     
     glPushMatrix();
+    glRotatef(turbing_r, 0.0f, 0.0f, 1.0f);
     glColor3f(0.0f, 0.0f, 1.0f);
     glScalef(3.0f, 0.7f, 0.7f);
     glutSolidSphere(0.05f, 100.0f, 100.0f);
@@ -21,15 +23,26 @@ void spaceship_turbine(void)
 
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 0.0f);
-    glRotatef(90, 0.0f, 0.0f, 1.0f);
+    glRotatef(90 + turbing_r, 0.0f, 0.0f, 1.0f);
     glScalef(3.0f, 0.7f, 0.7f);
     glutSolidSphere(0.05f, 100.0f, 100.0f);
     glPopMatrix();
+    turbing_r += 50;
 }
 
 void spaceship_wing(void)
 {
     /* the spaceship side wings */
+    glPushMatrix();
+    glColor3f(1.0f, 1.0f, 0.6f);
+    glScalef(6.5f, 0.5f, 1.8f);
+    glutSolidCone(0.1f, 1.0f, 3, 3);
+    glPopMatrix();
+}
+
+void spaceship_tail(void)
+{
+    /* the spaceship tail */
     glPushMatrix();
     glColor3f(1.0f, 1.0f, 0.6f);
     glScalef(6.5f, 0.5f, 1.8f);
@@ -49,9 +62,9 @@ void spaceship_body(void)
 
 void spaceship(void)
 {
+    glRotatef(test, 1.0, 0.0 , 0.0);
     spaceship_body();
     glTranslatef(-4.0f, 0.0f, 0.0f);
-    glRotatef(test, 1.0, 0.0 , 0.0);
-    spaceship_turbine();
-    test += 13.4;
+    spaceship_wing();
+    //test += 0.2;
 }
