@@ -9,6 +9,8 @@ float sun_position[] = { 100.0f, 0.0f, 2.0f, 1.0f};
 float test = 270;
 int keys[256];
 
+Spaceship space_ship;
+
 void Setup()  
 { 
 
@@ -38,8 +40,8 @@ void Setup()
     glClearColor(0.0f,0.0f,0.0f,1.0f);
 }
 
-void Render()
-{    
+void spawn_galaxy()
+{
     glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -48,8 +50,39 @@ void Render()
 
     //the body of the spaceship
     glPushMatrix();
-    glTranslatef(2.0f, 0.0f, -6.0f);
-    glRotatef(test, 0.0, 1.0 ,0.0);
+    glTranslatef(0.0f, 0.0f, -10.0f);
+    //glRotatef(test, 0.0, 1.0 ,0.0);
+    glRotatef(90, 0.0, 1.0 ,0.0);
+    spaceship();
+    space_ship.x = 0.0f;
+    space_ship.y = 0.0f;
+    space_ship.z = -10.0f;
+    space_ship.speed_x = 0.0f;
+    space_ship.speed_y = 0.0f;
+    space_ship.speed_z = 0.0f;
+    glPopMatrix();
+
+    glutSwapBuffers();
+}
+
+void Render()
+{    
+    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    //move the spaceship
+    space_ship.x += space_ship.speed_x;
+    space_ship.y += space_ship.speed_y;
+    space_ship.z += space_ship.speed_z;
+
+    //the body of the spaceship
+    glPushMatrix();
+    glTranslatef(space_ship.x, space_ship.y, space_ship.z);
+    glRotatef(90, 0.0, 1.0 ,0.0);
+    //glRotatef(test, 0.0, 1.0 ,0.0);
     //glRotatef(90, 0.0, 0.0 ,0.0);
     spaceship();
     glPopMatrix();
@@ -82,6 +115,31 @@ void Resize(int w, int h)
     gluPerspective(60.0, aspect, 1.0, -200.0);
 }
 
+void keyboard_handling(unsigned char key, int x, int y)
+{
+    switch(key){
+        case 27:
+            exit(0);
+        }
+}
+
+void arrow_keys_handling(int a_keys, int x, int y)
+{
+    switch(a_keys){
+        case GLUT_KEY_UP:
+            space_ship.speed_y += 0.01f;
+            break;
+        case GLUT_KEY_DOWN:
+            space_ship.speed_y += -0.01f;
+            break;
+        case GLUT_KEY_RIGHT:
+            space_ship.speed_x += 0.01f;
+            break;
+        case GLUT_KEY_LEFT:
+            space_ship.speed_x += -0.01f;
+            break;
+    }
+}
 
 int main(int argc, char* argv[])
 { 
@@ -105,10 +163,11 @@ int main(int argc, char* argv[])
     // Callbacks for the GL and GLUT events:
 
     // The rendering function 
-    glutDisplayFunc(Render);
+    glutDisplayFunc(spawn_galaxy);
     glutReshapeFunc(Resize);
     glutIdleFunc(Render);
-
+    glutKeyboardFunc(keyboard_handling);
+    glutSpecialFunc(arrow_keys_handling);
     //Enter main event handling loop
     glutMainLoop();
     return 0;
