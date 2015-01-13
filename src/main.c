@@ -11,13 +11,30 @@ typedef struct{
 
 float sun_ambient[] = { 0.5f, 0.5f, 0.5f, 1.0f};
 float sun_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f};
-float sun_position[] = { 0.0f, 200.0f, -200.0f, 1.0f};
+float sun_spec[] = { 1.0f, 1.0f, 1.0f, 1.0f};
+float sun_position[] = { 0.0f, 0.0f, -900.0f, 1.0f};
 
 float test = 270;
 int time, frame=0, base_time=0;
 
 Spaceship space_ship;
 Camera camera;
+
+void sun(){
+    GLfloat ambiref[] = {1.0f, 1.0f, 0.0f, 1.0f};
+    GLfloat diffref[] = {0.5f, 0.5f, 0.0f, 1.0f};
+    GLfloat specref[] = {0.6f, 0.6f, 0.5f, 1.0f};
+    GLfloat emmiref[] = {0.2f, 0.2f, 0.2f, 1.0f};
+    GLfloat shine = 0.25f;
+
+    glColor4f(1.0f, 1.0f, 0.8f, 1.0f);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambiref);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffref);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specref);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emmiref);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &shine);
+    glutSolidSphere(100.0f, 30, 50);
+}
 
 void Setup()  
 { 
@@ -30,9 +47,6 @@ void Setup()
     glDepthFunc( GL_LEQUAL );      
     glClearDepth(1.0); 		      
 
-    glLightfv(GL_LIGHT0, GL_AMBIENT, sun_ambient);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, sun_diffuse);
-    glLightfv(GL_LIGHT0, GL_POSITION, sun_position);
 
 
     // polygon rendering mode and material properties
@@ -40,10 +54,10 @@ void Setup()
 
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-
     // Black background
     glClearColor(0.0f,0.0f,0.0f,1.0f);
 }
@@ -64,6 +78,13 @@ void spawn_galaxy()
     glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_DEPTH_BUFFER_BIT);
 
+    glLightfv(GL_LIGHT0, GL_POSITION, sun_position);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, sun_ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, sun_diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, sun_spec);
+
+    glEnable(GL_LIGHT0);
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -73,6 +94,11 @@ void spawn_galaxy()
     //glRotatef(test, 0.0, 1.0 ,0.0);
     glRotatef(90, 0.0, 1.0 ,0.0);
     spaceship();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(sun_position[0], sun_position[1], sun_position[2]);
+    sun();
     glPopMatrix();
 
     glutSwapBuffers();
@@ -127,17 +153,23 @@ void Render()
     glMatrixMode(GL_MODELVIEW);
 
     //the body of the spaceship
+    glRotatef(camera.x, 1.0, 0.0 ,0.0);
+    glRotatef(camera.y, 0.0, 1.0 ,0.0);
+    glRotatef(camera.z, 0.0, 0.0 ,1.0);
     glPushMatrix();
     glTranslatef(space_ship.x, space_ship.y, space_ship.z);
-    glRotatef(camera.x, 1.0, 0.0 ,0.0);
-    glRotatef(90 + camera.y, 0.0, 1.0 ,0.0);
-    glRotatef(camera.z, 0.0, 0.0 ,1.0);
+    glRotatef(90, 0.0, 1.0 ,0.0);
     //glRotatef(test, 0.0, 1.0 ,0.0);
     //glRotatef(90, 0.0, 0.0 ,0.0);
     spaceship();
     glPopMatrix();
     test += 8.0f;
 
+    glPushMatrix();
+    glTranslatef(sun_position[0], sun_position[1], sun_position[2]);
+    sun();
+    glPopMatrix();
+    glLightfv(GL_LIGHT0, GL_POSITION, sun_position);
 
     glFlush();
     glutSwapBuffers();
