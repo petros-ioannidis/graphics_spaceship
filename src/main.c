@@ -2,14 +2,21 @@
 #include <GL/glut.h>
 #include "../headers/spaceship.h"
 
+typedef struct{
+    float x;
+    float y;
+    float z;
+}Camera;
+
 float sun_ambient[] = { 0.5f, 0.5f, 0.5f, 1.0f};
 float sun_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f};
-float sun_position[] = { 100.0f, 0.0f, 2.0f, 1.0f};
+float sun_position[] = { 0.0f, 200.0f, -200.0f, 1.0f};
 
 float test = 270;
 int keys[256];
 
 Spaceship space_ship;
+Camera camera;
 
 void Setup()  
 { 
@@ -42,6 +49,17 @@ void Setup()
 
 void spawn_galaxy()
 {
+    space_ship.x = 0.0f;
+    space_ship.y = 0.0f;
+    space_ship.z = -10.0f;
+    space_ship.speed_x = 0.0f;
+    space_ship.speed_y = 0.0f;
+    space_ship.speed_z = 0.0f;
+
+    camera.x = 0.0f;
+    camera.y = 0.0f;
+    camera.z = 0.0f;
+
     glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -54,12 +72,6 @@ void spawn_galaxy()
     //glRotatef(test, 0.0, 1.0 ,0.0);
     glRotatef(90, 0.0, 1.0 ,0.0);
     spaceship();
-    space_ship.x = 0.0f;
-    space_ship.y = 0.0f;
-    space_ship.z = -10.0f;
-    space_ship.speed_x = 0.0f;
-    space_ship.speed_y = 0.0f;
-    space_ship.speed_z = 0.0f;
     glPopMatrix();
 
     glutSwapBuffers();
@@ -81,7 +93,9 @@ void Render()
     //the body of the spaceship
     glPushMatrix();
     glTranslatef(space_ship.x, space_ship.y, space_ship.z);
-    glRotatef(90, 0.0, 1.0 ,0.0);
+    glRotatef(camera.x, 1.0, 0.0 ,0.0);
+    glRotatef(90 + camera.y, 0.0, 1.0 ,0.0);
+    glRotatef(camera.z, 0.0, 0.0 ,1.0);
     //glRotatef(test, 0.0, 1.0 ,0.0);
     //glRotatef(90, 0.0, 0.0 ,0.0);
     spaceship();
@@ -120,6 +134,18 @@ void keyboard_handling(unsigned char key, int x, int y)
     switch(key){
         case 27:
             exit(0);
+        case 'w':
+            camera.x += 1.0f;
+            break;
+        case 's':
+            camera.x += -1.0f;
+            break;
+        case 'd':
+            camera.y += 1.0f;
+            break;
+        case 'a':
+            camera.y += -1.0f;
+            break;
         }
 }
 
