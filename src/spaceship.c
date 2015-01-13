@@ -47,14 +47,14 @@ void spaceship_turbine(void)
     /* the main part of the turbine */
     glPushMatrix();
     glScalef(turbine_scale_x, turbine_scale_y, turbine_scale_z);
-    glutSolidTorus(turbine_ring, turbine_radius, 1000, 1000);
+    glutSolidTorus(turbine_ring, turbine_radius, 100, 100);
     glPopMatrix();
     
     /* the back part of the turbine */
     glPushMatrix();
     glTranslatef(0.0f, 0.0f, 0.12f);
     glScalef(turbine_back_scale_x, turbine_back_scale_y, turbine_back_scale_z);
-    glutSolidSphere(turbine_back_radius, 1000, 1000);
+    glutSolidSphere(turbine_back_radius, 100, 100);
     glPopMatrix();
 
     /* the fan of the turbine */
@@ -72,7 +72,7 @@ void spaceship_turbine(void)
     glutSolidSphere(0.2f, 100.0f, 100.0f);
     glPopMatrix();
 
-    turbine_r += 50;
+    turbine_r += 1.0f;
 }
 
 void spaceship_wing(void)
@@ -81,7 +81,7 @@ void spaceship_wing(void)
     glPushMatrix();
     glColor3f(1.0f, 1.0f, 0.6f);
     glScalef(wing_scale_x, wing_scale_y, wing_scale_z);
-    glutSolidCone(wing_base, wing_height, 1000, 1000);
+    glutSolidCone(wing_base, wing_height, 100, 100);
     glPopMatrix();
 }
 
@@ -91,7 +91,7 @@ void spaceship_tail(void)
     glPushMatrix();
     glColor3f(1.0f, 1.0f, 0.6f);
     glScalef(tail_scale_x, tail_scale_y, tail_scale_z);
-    glutSolidCone(tail_base, tail_height, 1000, 1000);
+    glutSolidCone(tail_base, tail_height, 100, 100);
     glPopMatrix();
 }
 
@@ -101,7 +101,7 @@ void spaceship_body(void)
     glPushMatrix();
     glColor3f(0.0f, 1.0f, 0.6f);
     glScalef(body_scale_x, body_scale_y, body_scale_z);
-    glutSolidSphere(body_radius, 1000, 1000);
+    glutSolidSphere(body_radius, 100, 100);
     glPopMatrix();
 }
 

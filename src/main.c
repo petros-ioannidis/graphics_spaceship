@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <GL/glut.h>
+#include <string.h>
 #include "../headers/spaceship.h"
 
 typedef struct{
@@ -13,7 +14,7 @@ float sun_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f};
 float sun_position[] = { 0.0f, 200.0f, -200.0f, 1.0f};
 
 float test = 270;
-int keys[256];
+int time, frame=0, base_time=0;
 
 Spaceship space_ship;
 Camera camera;
@@ -79,6 +80,12 @@ void spawn_galaxy()
 
 void Render()
 {    
+    float fps;
+    char fps_str[32];
+    int i;
+    void * font =  GLUT_BITMAP_TIMES_ROMAN_24; 
+    int w = glutGet( GLUT_WINDOW_WIDTH );
+    int h = glutGet( GLUT_WINDOW_HEIGHT );
     glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -89,6 +96,35 @@ void Render()
     space_ship.x += space_ship.speed_x;
     space_ship.y += space_ship.speed_y;
     space_ship.z += space_ship.speed_z;
+
+    //count the fps
+    frame++;
+    time = glutGet(GLUT_ELAPSED_TIME);
+    
+    if(time - base_time > 1000){
+        fps = frame*1000.0/(time - base_time);
+        sprintf(fps_str,"fps: %f\n", fps);
+        base_time = time;
+        frame = 0;
+    }
+
+    //render the fps on screen
+    glMatrixMode( GL_PROJECTION );
+    glPushMatrix();
+    glLoadIdentity();
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    gluOrtho2D(0, w, h, 0);
+    glMatrixMode( GL_MODELVIEW );
+
+    glPushMatrix();
+    glLoadIdentity();
+    glRasterPos2i(10,h - 100);
+    for(i = 0; i < strlen(fps_str); i++)
+        glutBitmapCharacter(font ,fps_str[i]);
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
 
     //the body of the spaceship
     glPushMatrix();
@@ -103,6 +139,7 @@ void Render()
     test += 8.0f;
 
 
+    glFlush();
     glutSwapBuffers();
 }
 
