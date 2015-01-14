@@ -1,6 +1,6 @@
 CC=gcc
-CFLAGS=-c -Wall -lGL -lGLU -lglut
-LDFLAGS=-lGL -lGLU -lglut
+CFLAGS=-c -Wall -lGL -lGLU -lglut -lm
+LDFLAGS=-lGL -lGLU -lglut -lm
 SOURCES=spaceship.c main.c
 OBJECTS=$(SOURCES:.c=.o)
 VPATH=src:headers

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <GL/glut.h>
 #include <string.h>
+#include <math.h>
 #include "../headers/spaceship.h"
 
 typedef struct{
@@ -24,17 +25,34 @@ void sun(){
     GLfloat ambiref[] = {1.0f, 1.0f, 1.0f, 1.0f};
     GLfloat diffref[] = {1.0f, 1.0f, 1.0f, 1.0f};
     GLfloat specref[] = {1.0f, 1.0f, 1.0f, 1.0f};
-    GLfloat emmiref[] = {0.2f, 0.2f, 0.2f, 1.0f};
+    GLfloat emmiref[] = {0.3f, 0.3f, 0.3f, 1.0f};
     GLfloat shine = 0.25f;
+    float oscil_max = 20.0f;
+    static float curr_sun_var = 0;
+    static float speed_sun_var = 0.70f;
+
+    if(abs(curr_sun_var) > oscil_max)
+        speed_sun_var = - speed_sun_var;
+    curr_sun_var += speed_sun_var;
 
     glCullFace(GL_FRONT);
-    glColor4f(1.0f, 1.0f, 0.8f, 1.0f);
+    glColor4f(1.0f, 1.0f, 0.8f, 0.5 + 0.5*(oscil_max - curr_sun_var)/(2*oscil_max));
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambiref);
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffref);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specref);
     glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emmiref);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &shine);
-    glutSolidSphere(100.0f, 30, 50);
+    glutSolidSphere(100.0f + curr_sun_var, 30, 50);
+    glCullFace(GL_BACK);
+
+    glCullFace(GL_FRONT);
+    glColor4f(1.0f, 1.0f, 0.8f, 0.5);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambiref);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffref);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specref);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emmiref);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &shine);
+    glutSolidSphere(90.0f, 30, 50);
     glCullFace(GL_BACK);
 }
 
