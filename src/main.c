@@ -9,10 +9,10 @@ typedef struct{
     float z;
 }Camera;
 
-float sun_ambient[] = { 0.5f, 0.5f, 0.5f, 1.0f};
+float sun_ambient[] = { 0.0f, 0.0f, 0.0f, 1.0f};
 float sun_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f};
 float sun_spec[] = { 1.0f, 1.0f, 1.0f, 1.0f};
-float sun_position[] = { 0.0f, 0.0f, -900.0f, 1.0f};
+float sun_position[] = { 0.0f, 0.0f, -900.0f, 0.0f};
 
 float test = 270;
 int time, frame=0, base_time=0;
@@ -21,12 +21,13 @@ Spaceship space_ship;
 Camera camera;
 
 void sun(){
-    GLfloat ambiref[] = {1.0f, 1.0f, 0.0f, 1.0f};
-    GLfloat diffref[] = {0.5f, 0.5f, 0.0f, 1.0f};
-    GLfloat specref[] = {0.6f, 0.6f, 0.5f, 1.0f};
+    GLfloat ambiref[] = {1.0f, 1.0f, 1.0f, 1.0f};
+    GLfloat diffref[] = {1.0f, 1.0f, 1.0f, 1.0f};
+    GLfloat specref[] = {1.0f, 1.0f, 1.0f, 1.0f};
     GLfloat emmiref[] = {0.2f, 0.2f, 0.2f, 1.0f};
     GLfloat shine = 0.25f;
 
+    glCullFace(GL_FRONT);
     glColor4f(1.0f, 1.0f, 0.8f, 1.0f);
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambiref);
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffref);
@@ -34,6 +35,7 @@ void sun(){
     glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emmiref);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &shine);
     glutSolidSphere(100.0f, 30, 50);
+    glCullFace(GL_BACK);
 }
 
 void Setup()  
@@ -58,7 +60,9 @@ void Setup()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glEnable(GL_LIGHTING);
+    glEnable(GL_NORMALIZE);
     // Black background
+    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
     glClearColor(0.0f,0.0f,0.0f,1.0f);
 }
 
@@ -78,10 +82,10 @@ void spawn_galaxy()
     glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    glLightfv(GL_LIGHT0, GL_POSITION, sun_position);
-    glLightfv(GL_LIGHT0, GL_AMBIENT, sun_ambient);
+    //glLightfv(GL_LIGHT0, GL_AMBIENT, sun_ambient);
+    //glLightfv(GL_LIGHT0, GL_SPECULAR, sun_spec);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, sun_diffuse);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, sun_spec);
+    glLightfv(GL_LIGHT0, GL_POSITION, sun_position);
 
     glEnable(GL_LIGHT0);
 

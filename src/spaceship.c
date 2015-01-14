@@ -39,19 +39,32 @@ float turbine_r = 0;
 
 void spaceship_turbine(void)
 {
+    float mat_ambient[] ={0.25f, 0.25f, 0.25f, 1.0f  };
+    float mat_diffuse[] ={0.4f, 0.4f, 0.4f, 1.0f };
+    float mat_specular[] ={0.774597f, 0.774597f, 0.774597f, 1.0f };
+    float shine = 76.8f;
     /* this is the turbine along with the fan */
 
     /* the color of the turbine */
-    glColor3f(1.0f, 0.5f, 0.3f);
 
     /* the main part of the turbine */
     glPushMatrix();
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &shine);
+    glColor3f(0.98f, 0.937f, 0.858f);
     glScalef(turbine_scale_x, turbine_scale_y, turbine_scale_z);
     glutSolidTorus(turbine_ring, turbine_radius, 100, 100);
     glPopMatrix();
     
     /* the back part of the turbine */
     glPushMatrix();
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &shine);
+    glColor3f(0.68f, 0.637f, 0.558f);
     glTranslatef(0.0f, 0.0f, 0.12f);
     glScalef(turbine_back_scale_x, turbine_back_scale_y, turbine_back_scale_z);
     glutSolidSphere(turbine_back_radius, 100, 100);
@@ -77,9 +90,18 @@ void spaceship_turbine(void)
 
 void spaceship_wing(void)
 {
+    float mat_ambient[] ={ 0.0f,0.0f,0.0f,1.0f };
+    float mat_diffuse[] ={ 0.1f,0.35f,0.1f,1.0f};
+    float mat_specular[] ={0.45f,0.55f,0.45f,1.0f };
+    float shine = 32.0f ;
+
     /* the spaceship side wings */
     glPushMatrix();
-    glColor3f(1.0f, 1.0f, 0.6f);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &shine);
+    glColor3f(0.007f, 0.615f, 0.454f);
     glScalef(wing_scale_x, wing_scale_y, wing_scale_z);
     glutSolidCone(wing_base, wing_height, 100, 100);
     glPopMatrix();
@@ -87,9 +109,18 @@ void spaceship_wing(void)
 
 void spaceship_tail(void)
 {
+    float mat_ambient[] ={ 0.0f,0.0f,0.0f,1.0f };
+    float mat_diffuse[] ={ 0.1f,0.35f,0.1f,1.0f};
+    float mat_specular[] ={0.45f,0.55f,0.45f,1.0f };
+    float shine = 32.0f ;
+
     /* the spaceship tail */
     glPushMatrix();
-    glColor3f(1.0f, 1.0f, 0.6f);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &shine);
+    glColor3f(0.007f, 0.615f, 0.454f);
     glScalef(tail_scale_x, tail_scale_y, tail_scale_z);
     glutSolidCone(tail_base, tail_height, 100, 100);
     glPopMatrix();
@@ -98,7 +129,18 @@ void spaceship_tail(void)
 void spaceship_body(void)
 {
     /* the spaceship body consists of a scaled sphere */
+
+    float mat_ambient[] ={0.25f, 0.25f, 0.25f, 1.0f  };
+    float mat_diffuse[] ={0.4f, 0.4f, 0.4f, 1.0f };
+    float mat_specular[] ={0.774597f, 0.774597f, 0.774597f, 1.0f };
+    float shine = 76.8f;
+
+
     glPushMatrix();
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &shine);
     glColor3f(0.0f, 1.0f, 0.6f);
     glScalef(body_scale_x, body_scale_y, body_scale_z);
     glutSolidSphere(body_radius, 100, 100);
