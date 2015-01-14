@@ -1,8 +1,15 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <GL/glut.h>
 #include <string.h>
 #include <math.h>
 #include "../headers/spaceship.h"
+
+#define STARS 20
+#define LAYERS 14
+#define STAR_DISTANCE_X 60000
+#define STAR_DISTANCE_Y 35000
+#define STAR_DISTANCE_Z 30000
 
 typedef struct{
     float x;
@@ -17,6 +24,7 @@ float sun_position[] = { 0.0f, 0.0f, -900.0f, 0.0f};
 
 float test = 270;
 int time, frame=0, base_time=0;
+unsigned int seed;
 
 Spaceship space_ship;
 Camera camera;
@@ -29,7 +37,7 @@ void sun(){
     GLfloat shine = 0.25f;
     float oscil_max = 20.0f;
     static float curr_sun_var = 0;
-    static float speed_sun_var = 0.70f;
+    static float speed_sun_var = 0.010f;
 
     if(abs(curr_sun_var) > oscil_max)
         speed_sun_var = - speed_sun_var;
@@ -84,6 +92,52 @@ void Setup()
     glClearColor(0.0f,0.0f,0.0f,1.0f);
 }
 
+void stars(int distance, int direction)
+{
+    int i = 0;
+    int j = 0;
+    int offset_x;
+    int offset_y;
+    int offset_z;
+
+    int distance_x = 0;
+    int distance_y = 0;
+    int distance_z = 0;
+    
+    if(direction == 0)
+        distance_x = distance;
+
+    if(direction == 1)
+        distance_y = distance;
+
+    if(direction == 2)
+        distance_z = distance;
+
+    glPushMatrix();
+    for(i = 0; i < LAYERS; i++)
+    {
+        glPushMatrix();
+        for(j = 0; j < STARS; j++)
+        {
+            offset_x = rand()%distance;
+            offset_y = rand()%distance;
+            offset_z = rand()%distance;
+
+            //printf("%d %d %d\n", offset_x, offset_y, offset_z);
+            glPushMatrix();
+            glTranslatef(offset_x, offset_y , offset_z);
+            sun();
+            glPopMatrix();
+
+            glTranslatef(distance_x, distance_y, distance_z);
+            //printf("%d %d %d\n", distance_x, distance_y, distance_z);
+        }
+        glPopMatrix();
+        glTranslatef(0.0f, -1.0*distance, 0.0f);
+    }
+    glPopMatrix();
+}
+
 void spawn_galaxy()
 {
     space_ship.x = 0.0f;
@@ -121,6 +175,10 @@ void spawn_galaxy()
     glPushMatrix();
     glTranslatef(sun_position[0], sun_position[1], sun_position[2]);
     sun();
+
+    glTranslatef(sun_position[0] - STAR_DISTANCE_X, sun_position[1] + STAR_DISTANCE_Y, sun_position[2] - STAR_DISTANCE_Z);
+    srand(seed);
+    stars(2000, 0);
     glPopMatrix();
 
     glutSwapBuffers();
@@ -190,6 +248,10 @@ void Render()
     glPushMatrix();
     glTranslatef(sun_position[0], sun_position[1], sun_position[2]);
     sun();
+    
+    glTranslatef(sun_position[0] - STAR_DISTANCE_X, sun_position[1] + STAR_DISTANCE_Y, sun_position[2] - STAR_DISTANCE_Z);
+    srand(seed);
+    stars(5000, 0);
     glPopMatrix();
     glLightfv(GL_LIGHT0, GL_POSITION, sun_position);
 
@@ -260,6 +322,8 @@ void arrow_keys_handling(int a_keys, int x, int y)
 
 int main(int argc, char* argv[])
 { 
+    seed = 10;
+    srand(seed);
     // initialize GLUT library state
     glutInit(&argc, argv);
 
