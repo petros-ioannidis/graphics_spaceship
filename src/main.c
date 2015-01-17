@@ -22,12 +22,108 @@ float sun_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f};
 float sun_spec[] = { 1.0f, 1.0f, 1.0f, 1.0f};
 float sun_position[] = { 0.0f, 0.0f, -900.0f, 0.0f};
 
+GLuint asteroid;
+
 float test = 270;
 int time, frame=0, base_time=0;
 unsigned int seed;
 
 Spaceship space_ship;
 Camera camera;
+
+void load_asteroid(char *fname)
+{
+    FILE *fp;
+    int read;
+    float x[2],y[2],z[2];
+    int pos[3] = {0, 0, 0};
+    char ch[2];
+    float v[10000][3];
+    float vn[10000][3];
+
+    asteroid = glGenLists(1);
+
+    fp = fopen(fname, "r");
+    if(fp == NULL){
+        fprintf(stderr, "Couldn't load asteroid file\n");
+        exit(-1);
+    }
+
+    glPointSize(2.0);
+    glNewList(asteroid, GL_COMPILE);
+
+    while(!(feof(fp))){
+        read = fscanf(fp, "%c%c %f %f %f\n", &ch[0], &ch[1], &x[0], &y[0], &z[0]);
+        if(read == 5 && ch[0] == 'v' && ch[1] == 'n'){
+            //printf("%c%c %f %f %f\n", ch[1][0], ch[1][1], x[1], y[1], z[1]);
+            vn[pos[0]][0] = x[0];
+            vn[pos[0]][1] = y[0];
+            vn[pos[0]][2] = z[0];
+            pos[0]++;
+            printf("%c%c %f %f %f\n", ch[0],ch[1], x[0], y[0], z[0]);
+            //glVertex3f(x, y, z);
+        }
+        else if(read == 5 && ch[0]=='v'){
+            printf("k\n");
+            v[pos[1]][0] = x[0];
+            v[pos[1]][1] = y[0];
+            v[pos[1]][2] = z[0];
+            pos[1]++;
+            printf("%c %f %f %f\n", ch[0], x[0], y[0], z[0]);
+            //glVertex3f(x, y, z);
+        }
+    }
+
+    printf("1\n");
+    
+    fseek(fp, SEEK_SET, 0);
+    while(1){
+        read = fscanf(fp, "%c %f//%f %f//%f %f//%f\n", &ch[0], &x[0], &x[1], &y[0], &y[1], &z[0], &z[1]);
+        if(ch[0] == 'f' && read == 7){
+            printf("stop %d\n", read);
+            break;
+        }
+    }
+
+    glPushMatrix();
+    glBegin(GL_TRIANGLES);
+    while(!feof(fp)){
+        if(ch[0] == 'f'){
+            printf("%c %f//%f %f//%f %f//%f\n", ch[0], x[0], x[1], y[0], y[1], z[0], z[1]);
+            glNormal3f(vn[(int)x[1] - 1][0], vn[(int)x[1] - 1][1], vn[(int)x[1] - 1][2]);
+            glVertex3f(v[(int)x[0] - 1][0], v[(int)x[0] - 1][1], v[(int)x[0] - 1][2]);
+            printf("%f %f %f\n", vn[(int)x[1] - 1][0], vn[(int)x[1] - 1][1], vn[(int)x[1] - 1][2]);
+            printf("%f %f %f\n", v[(int)x[0] - 1][0], v[(int)x[0] - 1][1], v[(int)x[0] - 1][1]);
+
+            glNormal3f(vn[(int)y[1] - 1][0], vn[(int)y[1] - 1][1], vn[(int)y[1] - 1][2]);
+            glVertex3f(v[(int)y[0] - 1][0], v[(int)y[0] - 1][1], v[(int)y[0] - 1][2]);
+            printf("%f %f %f\n", vn[(int)y[1] - 1][0], vn[(int)y[1] - 1][1], vn[(int)y[1] - 1][2]);
+            printf("%f %f %f\n", v[(int)y[0] - 1][0], v[(int)y[0] - 1][1], v[(int)y[0] - 1][1]);
+
+            glNormal3f(vn[(int)z[1] - 1][0], vn[(int)z[1] - 1][1], vn[(int)z[1] - 1][2]);
+            glVertex3f(v[(int)z[0] - 1][0], v[(int)z[0] - 1][1], v[(int)z[0] - 1][2]);
+            printf("%f %f %f\n", vn[(int)z[1] - 1][0], vn[(int)z[1] - 1][1], vn[(int)z[1] - 1][2]);
+            printf("%f %f %f\n", v[(int)z[0] - 1][0], v[(int)z[0] - 1][1], v[(int)z[0] - 1][1]);
+            pos[2]++;
+        }
+        read = fscanf(fp, "%c %f//%f %f//%f %f//%f\n", &ch[0], &x[0], &x[1], &y[0], &y[1], &z[0], &z[1]);
+    }
+    glEnd();
+    glPopMatrix();
+    
+    glEndList();
+    fclose(fp);
+    printf("%d %d %d\n", pos[0], pos[1], pos[2]);
+}
+
+void draw_asteroid()
+{
+    glPushMatrix();
+    glScalef(0.1f, 0.1f, 0.1f);
+    glColor4f(1.0f, 0.5f, 0.3f, 1.0f);
+    glCallList(asteroid);
+    glPopMatrix();
+} 
 
 void sun(){
     GLfloat ambiref[] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -37,7 +133,7 @@ void sun(){
     GLfloat shine = 0.25f;
     float oscil_max = 20.0f;
     static float curr_sun_var = 0;
-    static float speed_sun_var = 0.010f;
+    static float speed_sun_var = 1.0f;
 
     if(abs(curr_sun_var) > oscil_max)
         speed_sun_var = - speed_sun_var;
@@ -61,6 +157,41 @@ void sun(){
     glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emmiref);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &shine);
     glutSolidSphere(90.0f, 30, 50);
+    glCullFace(GL_BACK);
+}
+
+void star(){
+    GLfloat ambiref[] = {1.0f, 1.0f, 1.0f, 1.0f};
+    GLfloat diffref[] = {1.0f, 1.0f, 1.0f, 1.0f};
+    GLfloat specref[] = {1.0f, 1.0f, 1.0f, 1.0f};
+    GLfloat emmiref[] = {0.3f, 0.3f, 0.3f, 1.0f};
+    GLfloat shine = 0.25f;
+    float oscil_max = 20.0f;
+    static float curr_sun_var = 0;
+    static float speed_sun_var = 0.010f;
+
+    if(abs(curr_sun_var) > oscil_max)
+        speed_sun_var = - speed_sun_var;
+    curr_sun_var += speed_sun_var;
+
+    glCullFace(GL_FRONT);
+    glColor4f(1.0f, 1.0f, 0.8f, 0.5 + 0.5*(oscil_max - curr_sun_var)/(2*oscil_max));
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambiref);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffref);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specref);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emmiref);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &shine);
+    glutSolidSphere(100.0f + curr_sun_var, 6, 6);
+    glCullFace(GL_BACK);
+
+    glCullFace(GL_FRONT);
+    glColor4f(1.0f, 1.0f, 0.8f, 0.5);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambiref);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffref);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specref);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emmiref);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &shine);
+    glutSolidSphere(90.0f, 6, 6);
     glCullFace(GL_BACK);
 }
 
@@ -126,7 +257,7 @@ void stars(int distance, int direction)
             //printf("%d %d %d\n", offset_x, offset_y, offset_z);
             glPushMatrix();
             glTranslatef(offset_x, offset_y , offset_z);
-            sun();
+            star();
             glPopMatrix();
 
             glTranslatef(distance_x, distance_y, distance_z);
@@ -179,6 +310,11 @@ void spawn_galaxy()
     glTranslatef(sun_position[0] - STAR_DISTANCE_X, sun_position[1] + STAR_DISTANCE_Y, sun_position[2] - STAR_DISTANCE_Z);
     srand(seed);
     stars(2000, 0);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0.0f, 0.0f, -40.0f);
+    draw_asteroid();
     glPopMatrix();
 
     glutSwapBuffers();
@@ -254,6 +390,11 @@ void Render()
     stars(5000, 0);
     glPopMatrix();
     glLightfv(GL_LIGHT0, GL_POSITION, sun_position);
+
+    glPushMatrix();
+    glTranslatef(200.0f, 0.0f, -20.0f);
+    draw_asteroid();
+    glPopMatrix();
 
     glFlush();
     glutSwapBuffers();
@@ -343,6 +484,7 @@ int main(int argc, char* argv[])
 
     // Callbacks for the GL and GLUT events:
 
+    load_asteroid("./asteroid.obj");
     // The rendering function 
     glutDisplayFunc(spawn_galaxy);
     glutReshapeFunc(Resize);
