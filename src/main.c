@@ -16,7 +16,6 @@ typedef struct{
     float dist_z;
 }Camera;
 
-float test = 270;
 int time, frame=0, base_time=0;
 unsigned int seed;
 
@@ -90,7 +89,6 @@ void spawn_galaxy()
     //the body of the spaceship
     glPushMatrix();
     glTranslatef(0.0f, 0.0f, -10.0f);
-    //glRotatef(test, 0.0, 1.0 ,0.0);
     glRotatef(90, 0.0, 1.0 ,0.0);
     spaceship();
     glPopMatrix();
@@ -170,12 +168,9 @@ void Render()
     glPushMatrix();
     glTranslatef(space_ship.x, space_ship.y, space_ship.z);
     glRotatef(90, 0.0, 1.0 ,0.0);
-    //glRotatef(test, 0.0, 1.0 ,0.0);
-    //glRotatef(90, 0.0, 0.0 ,0.0);
     //the body of the spaceship
     spaceship();
     glPopMatrix();
-    test += 8.0f;
 
     glPushMatrix();
     glTranslatef(sun_position[0], sun_position[1], sun_position[2]);

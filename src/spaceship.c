@@ -202,3 +202,10 @@ void spaceship(void)
 
     glPopMatrix();
 }
+
+int spaceship_coll_asteroid(Spaceship space_ship)
+{
+    return test_collision( space_ship.x - body_radius*body_scale_x, space_ship.y - body_radius*body_scale_y, \
+            space_ship.z - body_radius*body_scale_z, space_ship.x + body_radius*body_scale_x, \
+            space_ship.y + body_radius*body_scale_y, space_ship.z + body_radius*body_scale_z);
+}

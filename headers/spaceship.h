@@ -20,4 +20,5 @@ void spaceship_tail(void);
 void spaceship_body(void);
 /* create the spaceship */
 void spaceship(void);
+int spaceship_coll_asteroid(Spaceship space_ship);
 #endif
