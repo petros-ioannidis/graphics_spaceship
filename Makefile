@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-c -Wall -lGL -lGLU -lglut -lm
 LDFLAGS=-lGL -lGLU -lglut -lm
-SOURCES=spaceship.c main.c star.c
+SOURCES=spaceship.c main.c star.c asteroid.c
 OBJECTS=$(SOURCES:.c=.o)
 VPATH=src:headers
 EXECUTABLE=spaceship

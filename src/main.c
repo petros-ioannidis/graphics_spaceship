@@ -5,14 +5,16 @@
 #include <math.h>
 #include "../headers/spaceship.h"
 #include "../headers/star.h"
+#include "../headers/asteroid.h"
 
 typedef struct{
     float x;
     float y;
     float z;
+    float dist_x;
+    float dist_y;
+    float dist_z;
 }Camera;
-
-GLuint asteroid;
 
 float test = 270;
 int time, frame=0, base_time=0;
@@ -22,100 +24,6 @@ float sun_position[] = { 0.0f, 0.0f, -900.0f, 0.0f};
 
 Spaceship space_ship;
 Camera camera;
-
-void load_asteroid(char *fname)
-{
-    FILE *fp;
-    int read;
-    float x[2],y[2],z[2];
-    int pos[3] = {0, 0, 0};
-    char ch[2];
-    float v[10000][3];
-    float vn[10000][3];
-
-    asteroid = glGenLists(1);
-
-    fp = fopen(fname, "r");
-    if(fp == NULL){
-        fprintf(stderr, "Couldn't load asteroid file\n");
-        exit(-1);
-    }
-
-    glPointSize(2.0);
-    glNewList(asteroid, GL_COMPILE);
-
-    while(!(feof(fp))){
-        read = fscanf(fp, "%c%c %f %f %f\n", &ch[0], &ch[1], &x[0], &y[0], &z[0]);
-        if(read == 5 && ch[0] == 'v' && ch[1] == 'n'){
-            //printf("%c%c %f %f %f\n", ch[1][0], ch[1][1], x[1], y[1], z[1]);
-            vn[pos[0]][0] = x[0];
-            vn[pos[0]][1] = y[0];
-            vn[pos[0]][2] = z[0];
-            pos[0]++;
-            printf("%c%c %f %f %f\n", ch[0],ch[1], x[0], y[0], z[0]);
-            //glVertex3f(x, y, z);
-        }
-        else if(read == 5 && ch[0]=='v'){
-            printf("k\n");
-            v[pos[1]][0] = x[0];
-            v[pos[1]][1] = y[0];
-            v[pos[1]][2] = z[0];
-            pos[1]++;
-            printf("%c %f %f %f\n", ch[0], x[0], y[0], z[0]);
-            //glVertex3f(x, y, z);
-        }
-    }
-
-    printf("1\n");
-    
-    fseek(fp, SEEK_SET, 0);
-    while(1){
-        read = fscanf(fp, "%c %f//%f %f//%f %f//%f\n", &ch[0], &x[0], &x[1], &y[0], &y[1], &z[0], &z[1]);
-        if(ch[0] == 'f' && read == 7){
-            printf("stop %d\n", read);
-            break;
-        }
-    }
-
-    glPushMatrix();
-    glBegin(GL_TRIANGLES);
-    while(!feof(fp)){
-        if(ch[0] == 'f'){
-            printf("%c %f//%f %f//%f %f//%f\n", ch[0], x[0], x[1], y[0], y[1], z[0], z[1]);
-            glNormal3f(vn[(int)x[1] - 1][0], vn[(int)x[1] - 1][1], vn[(int)x[1] - 1][2]);
-            glVertex3f(v[(int)x[0] - 1][0], v[(int)x[0] - 1][1], v[(int)x[0] - 1][2]);
-            printf("%f %f %f\n", vn[(int)x[1] - 1][0], vn[(int)x[1] - 1][1], vn[(int)x[1] - 1][2]);
-            printf("%f %f %f\n", v[(int)x[0] - 1][0], v[(int)x[0] - 1][1], v[(int)x[0] - 1][1]);
-
-            glNormal3f(vn[(int)y[1] - 1][0], vn[(int)y[1] - 1][1], vn[(int)y[1] - 1][2]);
-            glVertex3f(v[(int)y[0] - 1][0], v[(int)y[0] - 1][1], v[(int)y[0] - 1][2]);
-            printf("%f %f %f\n", vn[(int)y[1] - 1][0], vn[(int)y[1] - 1][1], vn[(int)y[1] - 1][2]);
-            printf("%f %f %f\n", v[(int)y[0] - 1][0], v[(int)y[0] - 1][1], v[(int)y[0] - 1][1]);
-
-            glNormal3f(vn[(int)z[1] - 1][0], vn[(int)z[1] - 1][1], vn[(int)z[1] - 1][2]);
-            glVertex3f(v[(int)z[0] - 1][0], v[(int)z[0] - 1][1], v[(int)z[0] - 1][2]);
-            printf("%f %f %f\n", vn[(int)z[1] - 1][0], vn[(int)z[1] - 1][1], vn[(int)z[1] - 1][2]);
-            printf("%f %f %f\n", v[(int)z[0] - 1][0], v[(int)z[0] - 1][1], v[(int)z[0] - 1][1]);
-            pos[2]++;
-        }
-        read = fscanf(fp, "%c %f//%f %f//%f %f//%f\n", &ch[0], &x[0], &x[1], &y[0], &y[1], &z[0], &z[1]);
-    }
-    glEnd();
-    glPopMatrix();
-    
-    glEndList();
-    fclose(fp);
-    printf("%d %d %d\n", pos[0], pos[1], pos[2]);
-}
-
-void draw_asteroid()
-{
-    glPushMatrix();
-    glScalef(0.1f, 0.1f, 0.1f);
-    glColor4f(1.0f, 0.5f, 0.3f, 1.0f);
-    glCallList(asteroid);
-    glPopMatrix();
-} 
 
 void Setup()  
 { 
@@ -162,6 +70,9 @@ void spawn_galaxy()
     camera.x = 0.0f;
     camera.y = 0.0f;
     camera.z = 0.0f;
+    camera.dist_x = 0.0f;
+    camera.dist_y = 0.0f;
+    camera.dist_z = 0.0f;
 
     glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_DEPTH_BUFFER_BIT);
@@ -194,7 +105,7 @@ void spawn_galaxy()
     glPopMatrix();
 
     glPushMatrix();
-    glTranslatef(0.0f, 0.0f, -40.0f);
+    //glTranslatef(0.0f, 0.0f, -40.0f);
     draw_asteroid();
     glPopMatrix();
 
@@ -249,15 +160,19 @@ void Render()
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
 
-    //the body of the spaceship
+    glTranslatef(0.0f, 0.0f, +space_ship.z + camera.dist_z);
     glRotatef(camera.x, 1.0, 0.0 ,0.0);
     glRotatef(camera.y, 0.0, 1.0 ,0.0);
     glRotatef(camera.z, 0.0, 0.0 ,1.0);
+    glTranslatef(0.0f, 0.0f, -space_ship.z - camera.dist_z);
+    glTranslatef(0.0f, 0.0f, camera.dist_z);
+
     glPushMatrix();
     glTranslatef(space_ship.x, space_ship.y, space_ship.z);
     glRotatef(90, 0.0, 1.0 ,0.0);
     //glRotatef(test, 0.0, 1.0 ,0.0);
     //glRotatef(90, 0.0, 0.0 ,0.0);
+    //the body of the spaceship
     spaceship();
     glPopMatrix();
     test += 8.0f;
@@ -265,15 +180,17 @@ void Render()
     glPushMatrix();
     glTranslatef(sun_position[0], sun_position[1], sun_position[2]);
     sun();
+    glLightfv(GL_LIGHT0, GL_POSITION, sun_position);
+    glPopMatrix();
     
+    glPushMatrix();
     glTranslatef(sun_position[0] - STAR_DISTANCE_X, sun_position[1] + STAR_DISTANCE_Y, sun_position[2] - STAR_DISTANCE_Z);
     srand(seed);
     stars(5000, 0);
     glPopMatrix();
-    glLightfv(GL_LIGHT0, GL_POSITION, sun_position);
 
     glPushMatrix();
-    glTranslatef(200.0f, 0.0f, -20.0f);
+    //glTranslatef(200.0f, 0.0f, -20.0f);
     draw_asteroid();
     glPopMatrix();
 
@@ -301,7 +218,7 @@ void Resize(int w, int h)
 
 
     float aspect = (float)w/(float)h;             /// aspect ratio
-    gluPerspective(60.0, aspect, 1.0, -200.0);
+    gluPerspective(60.0, aspect, 1.0, -2000.0);
 }
 
 void keyboard_handling(unsigned char key, int x, int y)
@@ -320,6 +237,12 @@ void keyboard_handling(unsigned char key, int x, int y)
             break;
         case 'a':
             camera.y += -1.0f;
+            break;
+        case 'q':
+            camera.dist_z += -1.0f;
+            break;
+        case 'e':
+            camera.dist_z += 1.0f;
             break;
         }
 }
@@ -349,7 +272,7 @@ int main(int argc, char* argv[])
     // initialize GLUT library state
     glutInit(&argc, argv);
 
-    glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE);
+    glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH);
 
 
     // Define the main window size and initial position 
