@@ -3,6 +3,7 @@
 #include <GL/glut.h>
 #include <string.h>
 #include <math.h>
+#include <time.h>
 #include "../headers/spaceship.h"
 #include "../headers/star.h"
 #include "../headers/asteroid.h"
@@ -16,8 +17,9 @@ typedef struct{
     float dist_z;
 }Camera;
 
-int time, frame=0, base_time=0;
+int time_, frame=0, base_time=0;
 unsigned int seed;
+extern int pause;
 
 float sun_position[] = { 0.0f, 0.0f, -900.0f, 0.0f};
 
@@ -61,7 +63,7 @@ void spawn_galaxy()
 
     space_ship.x = 0.0f;
     space_ship.y = 0.0f;
-    space_ship.z = -10.0f;
+    space_ship.z = -20.0f;
     space_ship.speed_x = 0.0f;
     space_ship.speed_y = 0.0f;
     space_ship.speed_z = 0.0f;
@@ -89,7 +91,7 @@ void spawn_galaxy()
     //the body of the spaceship
     glPushMatrix();
     glTranslatef(0.0f, 0.0f, -10.0f);
-    glRotatef(90, 0.0, 1.0 ,0.0);
+    //glRotatef(90, 0.0, 1.0 ,0.0);
     spaceship();
     glPopMatrix();
 
@@ -104,7 +106,8 @@ void spawn_galaxy()
 
     glPushMatrix();
     //glTranslatef(0.0f, 0.0f, -40.0f);
-    draw_asteroid();
+    srand(time(NULL));
+    draw_asteroid(space_ship.x, space_ship.y);
     glPopMatrix();
 
     glutSwapBuffers();
@@ -125,18 +128,20 @@ void Render()
     glLoadIdentity();
 
     //move the spaceship
-    space_ship.x += space_ship.speed_x;
-    space_ship.y += space_ship.speed_y;
-    space_ship.z += space_ship.speed_z;
+    if( !pause ){
+        space_ship.x += space_ship.speed_x;
+        space_ship.y += space_ship.speed_y;
+        space_ship.z += space_ship.speed_z;
+    }
 
     //count the fps
     frame++;
-    time = glutGet(GLUT_ELAPSED_TIME);
+    time_ = glutGet(GLUT_ELAPSED_TIME);
     
-    if(time - base_time > 1000){
-        fps = frame*1000.0/(time - base_time);
+    if(time_ - base_time > 1000){
+        fps = frame*1000.0/(time_ - base_time);
         sprintf(fps_str,"fps: %f\n", fps);
-        base_time = time;
+        base_time = time_;
         frame = 0;
     }
 
@@ -167,7 +172,7 @@ void Render()
 
     glPushMatrix();
     glTranslatef(space_ship.x, space_ship.y, space_ship.z);
-    glRotatef(90, 0.0, 1.0 ,0.0);
+    //glRotatef(90, 0.0, 1.0 ,0.0);
     //the body of the spaceship
     spaceship();
     glPopMatrix();
@@ -184,11 +189,34 @@ void Render()
     stars(5000, 0);
     glPopMatrix();
 
+    if( spaceship_coll_asteroid(space_ship) ){
+        pause = 1;
+        glMatrixMode( GL_PROJECTION );
+        glPushMatrix();
+        glLoadIdentity();
+        glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+        gluOrtho2D(0, w, h, 0);
+        glMatrixMode( GL_MODELVIEW );
+
+        glPushMatrix();
+        glLoadIdentity();
+        glRasterPos2i(w/2,h/2);
+        strncpy(fps_str, "You lose!", 32);
+        for(i = 0; i < strlen(fps_str); i++)
+            glutBitmapCharacter(font ,fps_str[i]);
+        glPopMatrix();
+        glMatrixMode(GL_PROJECTION);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+    }
+
     glPushMatrix();
     //glTranslatef(200.0f, 0.0f, -20.0f);
-    draw_asteroid();
+    srand(time(NULL));
+    draw_asteroid(space_ship.x, space_ship.y);
     glPopMatrix();
 
+    
     glFlush();
     glutSwapBuffers();
 }
@@ -239,24 +267,29 @@ void keyboard_handling(unsigned char key, int x, int y)
         case 'e':
             camera.dist_z += 1.0f;
             break;
+        case 'p':
+            pause = !pause;
+            break;
         }
 }
 
 void arrow_keys_handling(int a_keys, int x, int y)
 {
-    switch(a_keys){
-        case GLUT_KEY_UP:
-            space_ship.speed_y += 0.01f;
-            break;
-        case GLUT_KEY_DOWN:
-            space_ship.speed_y += -0.01f;
-            break;
-        case GLUT_KEY_RIGHT:
-            space_ship.speed_x += 0.01f;
-            break;
-        case GLUT_KEY_LEFT:
-            space_ship.speed_x += -0.01f;
-            break;
+    if( !pause ){
+        switch(a_keys){
+            case GLUT_KEY_UP:
+                space_ship.speed_y += 0.01f;
+                break;
+            case GLUT_KEY_DOWN:
+                space_ship.speed_y += -0.01f;
+                break;
+            case GLUT_KEY_RIGHT:
+                space_ship.speed_x += 0.01f;
+                break;
+            case GLUT_KEY_LEFT:
+                space_ship.speed_x += -0.01f;
+                break;
+        }
     }
 }
 

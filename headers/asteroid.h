@@ -14,6 +14,6 @@ typedef struct{
 }Asteroid;
 
 void load_asteroid(char *);
-void draw_asteroid();
+void draw_asteroid(float ,float );
 int test_collision(float x_left, float y_down, float z_front, float x_right, float y_up, float z_back);
 #endif

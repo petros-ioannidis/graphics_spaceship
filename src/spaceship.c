@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <GL/glut.h>
 #include "../headers/spaceship.h"
+#include "../headers/asteroid.h"
 
 /* body sphere dimensions */
 float body_radius = 1.0f;
-float body_scale_x = 2.5f;
+float body_scale_x = 1.0f;
 float body_scale_y = 1.0f;
-float body_scale_z = 1.0f;
+float body_scale_z = 2.5f;
 
 /* turbine dimensions */
 float turbine_radius = 0.2f;
@@ -36,6 +37,8 @@ float tail_scale_y = 0.5f;
 float tail_scale_z = 1.8f;
 
 float turbine_r = 0;
+
+extern int pause;
 
 void spaceship_turbine(void)
 {
@@ -85,7 +88,8 @@ void spaceship_turbine(void)
     glutSolidSphere(0.2f, 100.0f, 100.0f);
     glPopMatrix();
 
-    turbine_r += 1.0f;
+    if( !pause )
+        turbine_r += 1.0f;
 }
 
 void spaceship_wing(void)
@@ -153,6 +157,7 @@ void spaceship(void)
 
     spaceship_body();
 
+    glRotatef(90, 0.0, 1.0, 0.0);
     glPushMatrix();
     glTranslatef(-2.70f, 0.0f, 0.0f);
     glRotatef(90, 0.0f, 1.0f, 0.0f);
@@ -205,7 +210,8 @@ void spaceship(void)
 
 int spaceship_coll_asteroid(Spaceship space_ship)
 {
-    return test_collision( space_ship.x - body_radius*body_scale_x, space_ship.y - body_radius*body_scale_y, \
-            space_ship.z - body_radius*body_scale_z, space_ship.x + body_radius*body_scale_x, \
-            space_ship.y + body_radius*body_scale_y, space_ship.z + body_radius*body_scale_z);
+    //printf("%f %f %f %f %f %f\n", space_ship.x - body_radius*body_scale_x, space_ship.y - body_radius*body_scale_y, space_ship.z - body_radius*body_scale_z, space_ship.x + body_radius*body_scale_x, space_ship.y + body_radius*body_scale_y, space_ship.z + body_radius*body_scale_z);
+    return test_collision( space_ship.x - body_radius*body_scale_x + 0.2, space_ship.y - body_radius*body_scale_y + 0.2, \
+            space_ship.z - body_radius*body_scale_z + 0.5, space_ship.x + body_radius*body_scale_x - 0.2, \
+            space_ship.y + body_radius*body_scale_y - 0.2, space_ship.z + body_radius*body_scale_z - 0.5);
 }

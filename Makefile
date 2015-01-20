@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-c -Wall -lGL -lGLU -lglut -lm
+CFLAGS=-c -Wall -lGL -lGLU -lglut -lm -g3
 LDFLAGS=-lGL -lGLU -lglut -lm
 SOURCES=spaceship.c main.c star.c asteroid.c
 OBJECTS=$(SOURCES:.c=.o)

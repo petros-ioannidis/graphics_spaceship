@@ -6,6 +6,8 @@
 #include "../headers/spaceship.h"
 #include "../headers/star.h"
 
+extern int pause;
+
 void sun(){
     GLfloat ambiref[] = {1.0f, 1.0f, 1.0f, 1.0f};
     GLfloat diffref[] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -16,9 +18,11 @@ void sun(){
     static float curr_sun_var = 0;
     static float speed_sun_var = 1.0f;
 
-    if(abs(curr_sun_var) > oscil_max)
-        speed_sun_var = - speed_sun_var;
-    curr_sun_var += speed_sun_var;
+    if( !pause ){
+        if(abs(curr_sun_var) > oscil_max)
+            speed_sun_var = - speed_sun_var;
+        curr_sun_var += speed_sun_var;
+    }
 
     glCullFace(GL_FRONT);
     glColor4f(1.0f, 1.0f, 0.8f, 0.5 + 0.5*(oscil_max - curr_sun_var)/(2*oscil_max));
@@ -51,9 +55,11 @@ void star(){
     static float curr_sun_var = 0;
     static float speed_sun_var = 0.010f;
 
-    if(abs(curr_sun_var) > oscil_max)
-        speed_sun_var = - speed_sun_var;
-    curr_sun_var += speed_sun_var;
+    if( !pause ){
+        if(abs(curr_sun_var) > oscil_max)
+            speed_sun_var = - speed_sun_var;
+        curr_sun_var += speed_sun_var;
+    }
 
     glCullFace(GL_FRONT);
     glColor4f(1.0f, 1.0f, 0.8f, 0.5 + 0.5*(oscil_max - curr_sun_var)/(2*oscil_max));

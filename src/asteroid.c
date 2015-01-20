@@ -6,6 +6,8 @@
 GLuint asteroid_;
 static Asteroid asteroid;
 
+extern int pause = 0;
+
 void load_asteroid(char *fname)
 {
     FILE *fp;
@@ -78,35 +80,45 @@ void load_asteroid(char *fname)
     fclose(fp);
 }
 
-void draw_asteroid()
+void draw_asteroid(float x, float y)
 {
     static int num_of_asteroids = 0;
-    float mat_ambient[] ={ 0.0f,0.0f,0.0f,1.0f };
-    float mat_diffuse[] ={ 0.1f,0.1f,0.1f,1.0f};
-    float mat_specular[] ={0.0f,0.0f,0.0f,1.0f };
+    float mat_ambient[] = { 0.0f,0.0f,0.0f,1.0f };
+    float mat_diffuse[] = { 0.1f,0.1f,0.1f,1.0f };
+    float mat_specular[] = { 0.0f,0.0f,0.0f,1.0f };
     float shine = 32.0f ;
 
-    if( asteroid.position[2] > 0.0f && num_of_asteroids == 1){
+    if( asteroid.position[2] > 100.0f && num_of_asteroids == 1){
         num_of_asteroids = 0;
     }
     else if( num_of_asteroids == 0 ){
-        asteroid.position[0] = 0.0f;
-        asteroid.position[1] = 0.0f;
-        asteroid.position[2] = -400.0f;
-        asteroid.rotation_x = 0.5f;
-        asteroid.rotation_y = 1.0f;
-        asteroid.rotation_z = 0.2f;
-        asteroid.scale = 0.001;
-        asteroid.radius = 657.0f*asteroid.scale;
-        asteroid.speed = 0.7f;
-        asteroid.ang_speed = 0.7f;
-        num_of_asteroids = 1;
+        if( !pause ){
+            asteroid.position[0] = x - 2.0f + (rand()%4000)/1000.0;
+            asteroid.position[1] = y - 2.0f + (rand()%4000)/1000.0;
+            asteroid.position[2] = -200.0f;
+            asteroid.rotation_x = rand()%1000;
+            asteroid.rotation_x /= 1000.0;
+            asteroid.rotation_y = rand()%1000;
+            asteroid.rotation_y /= 1000.0;
+            asteroid.rotation_z = rand()%1000;
+            asteroid.rotation_z /= 1000.0;
+            asteroid.scale = rand()%1000;
+            asteroid.scale = asteroid.scale/1000000.0 + 0.001;
+            asteroid.radius = 657.0f*asteroid.scale;
+            asteroid.speed = rand()%1000;
+            asteroid.speed = 0.3 + asteroid.speed/1000.0;
+            asteroid.ang_speed = rand()%1000;
+            asteroid.ang_speed = 0.4f + asteroid.ang_speed/1000.0;
+            num_of_asteroids = 1;
+        }
     }
 
     if( num_of_asteroids ){
-        asteroid.position[2] += asteroid.speed;
-        asteroid.rotation += asteroid.ang_speed;
-        glPushMatrix();
+        if( !pause ){
+            asteroid.position[2] += asteroid.speed;
+            asteroid.rotation += asteroid.ang_speed;
+            glPushMatrix();
+        }
 
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
         glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
