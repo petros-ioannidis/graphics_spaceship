@@ -4,42 +4,65 @@
 #include "../headers/asteroid.h"
 
 /* body sphere dimensions */
-float body_radius = 1.0f;
-float body_scale_x = 1.0f;
-float body_scale_y = 1.0f;
-float body_scale_z = 2.5f;
+#define body_radius 1.0f
+#define body_scale_x 1.0f
+#define body_scale_y 1.0f
+#define body_scale_z 2.5f
+
+/* cockpit dimentions */
+#define cockpit_radius body_radius * body_scale_x * 0.3
+#define cockpit_scale_x 2.0f
+#define cockpit_scale_y 1.0f
+#define cockpit_scale_z 1.0f
 
 /* turbine dimensions */
-float turbine_radius = 0.2f;
-float turbine_ring = 0.04f;
-float turbine_scale_x = 1.0f;
-float turbine_scale_y = 1.0f;
-float turbine_scale_z = 3.0f;
+#define turbine_radius 0.2f
+#define turbine_ring 0.04f
+#define turbine_scale_x 1.0f
+#define turbine_scale_y 1.0f
+#define turbine_scale_z 3.0f
 
 /* back of the turbine dimensions */
-float turbine_back_radius = 0.2f;
-float turbine_back_scale_x = 1.0f;
-float turbine_back_scale_y = 1.0f;
-float turbine_back_scale_z = 0.15f;
+#define turbine_back_radius 0.2f
+#define turbine_back_scale_x 1.0f
+#define turbine_back_scale_y 1.0f
+#define turbine_back_scale_z 0.15f
 
 /* spaceship wing dimensions */
-float wing_base = 0.1f;
-float wing_height = 1.0f;
-float wing_scale_x = 6.5f;
-float wing_scale_y = 0.5f;
-float wing_scale_z = 1.8f;
+#define wing_base 0.1f
+#define wing_height 1.0f
+#define wing_scale_x 6.5f
+#define wing_scale_y 0.5f
+#define wing_scale_z 1.8f
 
 /* spaceship tail dimensions */
-float tail_base = 0.1f;
-float tail_height = 1.0f;
-float tail_scale_x = 6.5f;
-float tail_scale_y = 0.5f;
-float tail_scale_z = 1.8f;
+#define tail_base 0.1f
+#define tail_height 1.0f
+#define tail_scale_x 6.5f
+#define tail_scale_y 0.5f
+#define tail_scale_z 1.8f
 
 float turbine_r = 0;
 
 extern int pause;
 
+void spaceship_cockpit(void)
+{
+    float mat_ambient[] ={0.2f, 0.2f, 0.70f, 1.0f  };
+    float mat_diffuse[] ={0.4f, 0.4f, 0.7f, 1.0f };
+    float mat_specular[] ={0.374597f, 0.374597f, 0.774597f, 1.0f };
+    float shine = 76.8f;
+
+    glPushMatrix();
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &shine);
+    glColor4f(0.00f, 0.000f, 1.000f, 0.6);
+    glScalef(cockpit_scale_x, cockpit_scale_y, cockpit_scale_z);
+    glutSolidSphere(cockpit_radius, 10, 10);
+    glPopMatrix();
+}
 void spaceship_turbine(void)
 {
     float mat_ambient[] ={0.25f, 0.25f, 0.25f, 1.0f  };
@@ -157,6 +180,11 @@ void spaceship(void)
 
     spaceship_body();
 
+    glPushMatrix();
+    glTranslatef(0.0f, 0.3f, -body_radius*body_scale_z + 0.5);
+    spaceship_cockpit();
+    glPopMatrix();
+
     glRotatef(90, 0.0, 1.0, 0.0);
     glPushMatrix();
     glTranslatef(-2.70f, 0.0f, 0.0f);
@@ -212,6 +240,6 @@ int spaceship_coll_asteroid(Spaceship space_ship)
 {
     //printf("%f %f %f %f %f %f\n", space_ship.x - body_radius*body_scale_x, space_ship.y - body_radius*body_scale_y, space_ship.z - body_radius*body_scale_z, space_ship.x + body_radius*body_scale_x, space_ship.y + body_radius*body_scale_y, space_ship.z + body_radius*body_scale_z);
     return test_collision( space_ship.x - body_radius*body_scale_x + 0.2, space_ship.y - body_radius*body_scale_y + 0.2, \
-            space_ship.z - body_radius*body_scale_z + 0.5, space_ship.x + body_radius*body_scale_x - 0.2, \
-            space_ship.y + body_radius*body_scale_y - 0.2, space_ship.z + body_radius*body_scale_z - 0.5);
+            space_ship.z - body_radius*body_scale_z + 0.3, space_ship.x + body_radius*body_scale_x - 0.2, \
+            space_ship.y + body_radius*body_scale_y - 0.2, space_ship.z + body_radius*body_scale_z - 0.3);
 }
