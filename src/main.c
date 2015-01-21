@@ -99,9 +99,36 @@ void spawn_galaxy()
     glTranslatef(sun_position[0], sun_position[1], sun_position[2]);
     sun();
 
-    glTranslatef(sun_position[0] - STAR_DISTANCE_X, sun_position[1] + STAR_DISTANCE_Y, sun_position[2] - STAR_DISTANCE_Z);
+    glPushMatrix();
+    glTranslatef( - STAR_DISTANCE_X, + STAR_DISTANCE_Y, - STAR_DISTANCE_Z);
     srand(seed);
-    stars(2000, 0);
+    stars(6000, 0);
+
+    glTranslatef( STAR_DISTANCE_X, -STAR_DISTANCE_Y,  +STAR_DISTANCE_Z);
+    glRotatef(90, 0.0, 1.0, 0.0);
+    glTranslatef( -STAR_DISTANCE_X, +STAR_DISTANCE_Y,  -STAR_DISTANCE_Z);
+    stars(6000, 0);
+
+    glTranslatef( STAR_DISTANCE_X, -STAR_DISTANCE_Y,  +STAR_DISTANCE_Z);
+    glRotatef(90, 0.0, 1.0, 0.0);
+    glTranslatef( -STAR_DISTANCE_X, +STAR_DISTANCE_Y,  -STAR_DISTANCE_Z);
+    stars(6000, 0);
+    
+    glTranslatef( STAR_DISTANCE_X, -STAR_DISTANCE_Y,  +STAR_DISTANCE_Z);
+    glRotatef(90, 0.0, 1.0, 0.0);
+    glTranslatef( -STAR_DISTANCE_X, +STAR_DISTANCE_Y,  -STAR_DISTANCE_Z);
+    stars(6000, 0);
+
+    glTranslatef( STAR_DISTANCE_X, -STAR_DISTANCE_Y,  +STAR_DISTANCE_Z);
+    glRotatef(90, 0.0, 1.0, 0.0);
+    glRotatef(90, 1.0, 0.0, 0.0);
+    glTranslatef( -STAR_DISTANCE_X, +STAR_DISTANCE_Y,  -STAR_DISTANCE_Z);
+    stars(6000, 0);
+
+    glTranslatef( STAR_DISTANCE_X, -STAR_DISTANCE_Y,  +STAR_DISTANCE_Z);
+    glRotatef(180, 1.0, 0.0, 0.0);
+    glTranslatef( -STAR_DISTANCE_X, +STAR_DISTANCE_Y,  -STAR_DISTANCE_Z);
+    stars(6000, 0);
     glPopMatrix();
 
     glPushMatrix();
@@ -184,9 +211,35 @@ void Render()
     glPopMatrix();
     
     glPushMatrix();
-    glTranslatef(sun_position[0] - STAR_DISTANCE_X, sun_position[1] + STAR_DISTANCE_Y, sun_position[2] - STAR_DISTANCE_Z);
+    glTranslatef( - STAR_DISTANCE_X, + STAR_DISTANCE_Y, - STAR_DISTANCE_Z);
     srand(seed);
-    stars(5000, 0);
+    stars(6000, 0);
+
+    glTranslatef( STAR_DISTANCE_X, -STAR_DISTANCE_Y,  +STAR_DISTANCE_Z);
+    glRotatef(90, 0.0, 1.0, 0.0);
+    glTranslatef( -STAR_DISTANCE_X, +STAR_DISTANCE_Y,  -STAR_DISTANCE_Z);
+    stars(6000, 0);
+
+    glTranslatef( STAR_DISTANCE_X, -STAR_DISTANCE_Y,  +STAR_DISTANCE_Z);
+    glRotatef(90, 0.0, 1.0, 0.0);
+    glTranslatef( -STAR_DISTANCE_X, +STAR_DISTANCE_Y,  -STAR_DISTANCE_Z);
+    stars(6000, 0);
+    
+    glTranslatef( STAR_DISTANCE_X, -STAR_DISTANCE_Y,  +STAR_DISTANCE_Z);
+    glRotatef(90, 0.0, 1.0, 0.0);
+    glTranslatef( -STAR_DISTANCE_X, +STAR_DISTANCE_Y,  -STAR_DISTANCE_Z);
+    stars(6000, 0);
+
+    glTranslatef( STAR_DISTANCE_X, -STAR_DISTANCE_Y,  +STAR_DISTANCE_Z);
+    glRotatef(90, 0.0, 1.0, 0.0);
+    glRotatef(90, 1.0, 0.0, 0.0);
+    glTranslatef( -STAR_DISTANCE_X, +STAR_DISTANCE_Y,  -STAR_DISTANCE_Z);
+    stars(6000, 0);
+
+    glTranslatef( STAR_DISTANCE_X, -STAR_DISTANCE_Y,  +STAR_DISTANCE_Z);
+    glRotatef(180, 1.0, 0.0, 0.0);
+    glTranslatef( -STAR_DISTANCE_X, +STAR_DISTANCE_Y,  -STAR_DISTANCE_Z);
+    stars(6000, 0);
     glPopMatrix();
 
     if( spaceship_coll_asteroid(space_ship) ){
