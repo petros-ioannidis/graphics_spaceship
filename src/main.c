@@ -52,14 +52,6 @@ void Setup()
     // Black background
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
     glClearColor(0.0f,0.0f,0.0f,1.0f);
-}
-
-void spawn_galaxy()
-{
-
-    float sun_ambient[] = { 0.0f, 0.0f, 0.0f, 1.0f};
-    float sun_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f};
-    float sun_spec[] = { 1.0f, 1.0f, 1.0f, 1.0f};
 
     space_ship.x = 0.0f;
     space_ship.y = 0.0f;
@@ -74,6 +66,14 @@ void spawn_galaxy()
     camera.dist_x = 0.0f;
     camera.dist_y = 0.0f;
     camera.dist_z = 0.0f;
+}
+
+void spawn_galaxy()
+{
+
+    float sun_ambient[] = { 0.0f, 0.0f, 0.0f, 1.0f};
+    float sun_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f};
+    float sun_spec[] = { 1.0f, 1.0f, 1.0f, 1.0f};
 
     glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_DEPTH_BUFFER_BIT);
@@ -90,7 +90,7 @@ void spawn_galaxy()
 
     //the body of the spaceship
     glPushMatrix();
-    glTranslatef(0.0f, 0.0f, -10.0f);
+    glTranslatef(space_ship.x, space_ship.y, space_ship.z);
     //glRotatef(90, 0.0, 1.0 ,0.0);
     spaceship();
     glPopMatrix();
@@ -288,13 +288,9 @@ void Resize(int w, int h)
     glMatrixMode(GL_PROJECTION); 
     glLoadIdentity();
 
-    ////(02b)
-    // L     R       B      T      N      F
-    //glOrtho (-50.0f, 50.0f, -50.0f, 50.0f,-500.0f,500.0f);
-
-
     float aspect = (float)w/(float)h;             /// aspect ratio
-    gluPerspective(60.0, aspect, 1.0, -2000.0);
+    gluPerspective(60.0, aspect, 1.0, 80000.0);
+    glMatrixMode(GL_MODELVIEW); 
 }
 
 void keyboard_handling(unsigned char key, int x, int y)
