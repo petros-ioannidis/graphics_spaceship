@@ -238,7 +238,6 @@ void spaceship(void)
 
 int spaceship_coll_asteroid(Spaceship space_ship)
 {
-    //printf("%f %f %f %f %f %f\n", space_ship.x - body_radius*body_scale_x, space_ship.y - body_radius*body_scale_y, space_ship.z - body_radius*body_scale_z, space_ship.x + body_radius*body_scale_x, space_ship.y + body_radius*body_scale_y, space_ship.z + body_radius*body_scale_z);
     return test_collision( space_ship.x - body_radius*body_scale_x + 0.2, space_ship.y - body_radius*body_scale_y + 0.2, \
             space_ship.z - body_radius*body_scale_z + 0.3, space_ship.x + body_radius*body_scale_x - 0.2, \
             space_ship.y + body_radius*body_scale_y - 0.2, space_ship.z + body_radius*body_scale_z - 0.3);

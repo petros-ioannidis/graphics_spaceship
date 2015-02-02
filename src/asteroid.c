@@ -6,7 +6,7 @@
 GLuint asteroid_;
 static Asteroid asteroid;
 
-extern int pause = 0;
+extern int pause;
 
 void load_asteroid(char *fname)
 {
@@ -32,19 +32,16 @@ void load_asteroid(char *fname)
     while(!(feof(fp))){
         read = fscanf(fp, "%c%c %f %f %f\n", &ch[0], &ch[1], &x[0], &y[0], &z[0]);
         if(read == 5 && ch[0] == 'v' && ch[1] == 'n'){
-            //printf("%c%c %f %f %f\n", ch[1][0], ch[1][1], x[1], y[1], z[1]);
             vn[pos[0]][0] = x[0];
             vn[pos[0]][1] = y[0];
             vn[pos[0]][2] = z[0];
             pos[0]++;
-            //glVertex3f(x, y, z);
         }
         else if(read == 5 && ch[0]=='v'){
             v[pos[1]][0] = x[0];
             v[pos[1]][1] = y[0];
             v[pos[1]][2] = z[0];
             pos[1]++;
-            //glVertex3f(x, y, z);
         }
     }
 

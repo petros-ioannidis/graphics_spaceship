@@ -113,14 +113,12 @@ void stars(int distance, int direction)
             offset_y = rand()%distance;
             offset_z = rand()%distance;
 
-            //printf("%d %d %d\n", offset_x, offset_y, offset_z);
             glPushMatrix();
             glTranslatef(offset_x, offset_y , offset_z);
             star();
             glPopMatrix();
 
             glTranslatef(distance_x, distance_y, distance_z);
-            //printf("%d %d %d\n", distance_x, distance_y, distance_z);
         }
         glPopMatrix();
         glTranslatef(0.0f, -1.0*distance, 0.0f);

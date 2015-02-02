@@ -17,9 +17,8 @@ typedef struct{
     float dist_z;
 }Camera;
 
-int time_, frame=0, base_time=0;
 unsigned int seed;
-extern int pause;
+int pause;
 
 float sun_position[] = { 0.0f, 0.0f, -900.0f, 0.0f};
 
@@ -49,7 +48,6 @@ void Setup()
 
     glEnable(GL_LIGHTING);
     glEnable(GL_NORMALIZE);
-    // Black background
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
     glClearColor(0.0f,0.0f,0.0f,1.0f);
 
@@ -91,7 +89,6 @@ void spawn_galaxy()
     //the body of the spaceship
     glPushMatrix();
     glTranslatef(space_ship.x, space_ship.y, space_ship.z);
-    //glRotatef(90, 0.0, 1.0 ,0.0);
     spaceship();
     glPopMatrix();
 
@@ -132,7 +129,6 @@ void spawn_galaxy()
     glPopMatrix();
 
     glPushMatrix();
-    //glTranslatef(0.0f, 0.0f, -40.0f);
     srand(time(NULL));
     draw_asteroid(space_ship.x, space_ship.y);
     glPopMatrix();
@@ -142,8 +138,7 @@ void spawn_galaxy()
 
 void Render()
 {    
-    float fps;
-    char fps_str[32];
+    char lose[32];
     int i;
     void * font =  GLUT_BITMAP_TIMES_ROMAN_24; 
     int w = glutGet( GLUT_WINDOW_WIDTH );
@@ -161,35 +156,6 @@ void Render()
         space_ship.z += space_ship.speed_z;
     }
 
-    //count the fps
-    frame++;
-    time_ = glutGet(GLUT_ELAPSED_TIME);
-    
-    if(time_ - base_time > 1000){
-        fps = frame*1000.0/(time_ - base_time);
-        sprintf(fps_str,"fps: %f\n", fps);
-        base_time = time_;
-        frame = 0;
-    }
-
-    //render the fps on screen
-    glMatrixMode( GL_PROJECTION );
-    glPushMatrix();
-    glLoadIdentity();
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    gluOrtho2D(0, w, h, 0);
-    glMatrixMode( GL_MODELVIEW );
-
-    glPushMatrix();
-    glLoadIdentity();
-    glRasterPos2i(10,h - 100);
-    for(i = 0; i < strlen(fps_str); i++)
-        glutBitmapCharacter(font ,fps_str[i]);
-    glPopMatrix();
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-
     glTranslatef(0.0f, 0.0f, +space_ship.z + camera.dist_z);
     glRotatef(camera.x, 1.0, 0.0 ,0.0);
     glRotatef(camera.y, 0.0, 1.0 ,0.0);
@@ -199,7 +165,6 @@ void Render()
 
     glPushMatrix();
     glTranslatef(space_ship.x, space_ship.y, space_ship.z);
-    //glRotatef(90, 0.0, 1.0 ,0.0);
     //the body of the spaceship
     spaceship();
     glPopMatrix();
@@ -254,9 +219,9 @@ void Render()
         glPushMatrix();
         glLoadIdentity();
         glRasterPos2i(w/2,h/2);
-        strncpy(fps_str, "You lose!", 32);
-        for(i = 0; i < strlen(fps_str); i++)
-            glutBitmapCharacter(font ,fps_str[i]);
+        strncpy(lose, "You lose!", 32);
+        for(i = 0; i < strlen(lose); i++)
+            glutBitmapCharacter(font ,lose[i]);
         glPopMatrix();
         glMatrixMode(GL_PROJECTION);
         glPopMatrix();
@@ -264,7 +229,6 @@ void Render()
     }
 
     glPushMatrix();
-    //glTranslatef(200.0f, 0.0f, -20.0f);
     srand(time(NULL));
     draw_asteroid(space_ship.x, space_ship.y);
     glPopMatrix();
@@ -358,7 +322,7 @@ int main(int argc, char* argv[])
     glutInitWindowPosition(50,50);
 
     // Create and label the main window
-    glutCreateWindow("spaceship");
+    glutCreateWindow("Interstellar");
 
     // Configure various properties of the OpenGL rendering context
     Setup();
