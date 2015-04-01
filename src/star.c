@@ -11,7 +11,7 @@ extern int pause;
 void sun(){
     GLfloat ambiref[] = {1.0f, 1.0f, 1.0f, 1.0f};
     GLfloat diffref[] = {1.0f, 1.0f, 1.0f, 1.0f};
-    GLfloat specref[] = {1.0f, 1.0f, 1.0f, 1.0f};
+    GLfloat specref[] = {0.0f, 0.0f, 0.0f, 0.0f};
     GLfloat emmiref[] = {0.3f, 0.3f, 0.3f, 1.0f};
     GLfloat shine = 0.25f;
     float oscil_max = 20.0f;
